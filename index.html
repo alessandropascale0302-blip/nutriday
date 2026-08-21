@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#22c55e">
+<title>NutriDay</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f8fafc;color:#0f172a}
+#root{min-height:100vh}.app{max-width:520px;margin:auto;min-height:100vh;background:white;padding-bottom:80px}
+header{padding:22px 20px 14px;background:linear-gradient(135deg,#22c55e,#059669);color:white;border-radius:0 0 24px 24px}
+h1{margin:0;font-size:28px}header p{margin:5px 0 0;opacity:.9}
+main{padding:18px}.card{border:1px solid #e2e8f0;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 5px 18px #0000000a}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.water{font-size:38px;font-weight:700;color:#0ea5e9}
+button{border:0;border-radius:12px;padding:11px 15px;background:#22c55e;color:white;font-weight:700;font-size:15px;cursor:pointer}
+button.secondary{background:#f1f5f9;color:#0f172a}.progress{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:12px 0}.bar{height:100%;width:0;background:#0ea5e9;transition:.3s}
+input{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px}
+small{color:#64748b}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const root=document.getElementById('root');
+let glasses=Number(localStorage.getItem('nutriday_glasses')||0);
+const goal=8;
+function render(){
+ const pct=Math.min(100,glasses/goal*100);
+ root.innerHTML=`<div class="app">
+<header><h1>💧 NutriDay</h1><p>Il tuo tracker quotidiano dell'acqua</p></header>
+<main>
+<div class="card"><div class="row"><div><small>Acqua di oggi</small><div class="water">${glasses*250} ml</div></div><div style="font-size:44px">💧</div></div>
+<div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+<div class="row"><small>${glasses} / ${goal} bicchieri</small><strong>${Math.round(pct)}%</strong></div></div>
+<div class="card"><h3>Aggiungi acqua</h3><p><button onclick="add(1)">+ 1 bicchiere (250 ml)</button></p><p><button class="secondary" onclick="add(-1)">− Rimuovi un bicchiere</button></p></div>
+<div class="card"><h3>Obiettivo personalizzato</h3><input id="goal" type="number" min="1" max="30" value="${goal}" disabled><small>L'obiettivo predefinito è 8 bicchieri.</small></div>
+<div class="card"><div class="row"><div><strong>Stato</strong><br><small>${glasses>=goal?'Obiettivo raggiunto! 🎉':'Continua così!'}</small></div><button class="secondary" onclick="resetDay()">Azzera giornata</button></div></div>
+</main></div>`;
+}
+function add(n){glasses=Math.max(0,glasses+n);localStorage.setItem('nutriday_glasses',glasses);render()}
+function resetDay(){if(confirm('Vuoi azzerare i dati di oggi?')){glasses=0;localStorage.setItem('nutriday_glasses',0);render()}}
+render();
+</script>
+</body>
+</html>
